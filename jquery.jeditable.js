@@ -97,6 +97,11 @@
         var onreset  = settings.onreset  || function() { };
         var onerror  = settings.onerror  || reset;
 
+        // selector name of the (div), where input/wysiwyg is embedded to
+        // fire save event when clicking outside of the container
+        // condition: onblur : submit
+        var containerName = settings.containerName;
+
         /* Show tooltip. */
         if (settings.tooltip) {
             $(this).attr('title', settings.tooltip);
@@ -281,6 +286,17 @@
                             form.submit();
                         }, 200);
                     });
+                    $('body').click(function() {
+                        input.closest(settings.containerName).click(function(e) {
+                            e.stopPropagation();
+                        });
+
+                        t = setTimeout(function() {
+                            form.submit();
+                        }, 200);
+
+                    });
+
                 } else if ($.isFunction(settings.onblur)) {
                     input.blur(function(e) {
                         settings.onblur.apply(self, [input.val(), settings]);
@@ -300,17 +316,20 @@
                     /* Do no submit. */
                     e.preventDefault();
 
+                    // unbind click event on body to prevent reloading page after save
+                    $('body').unbind('click');
+
                     /* Call before submit hook. */
                     /* If it returns false abort submitting. */
                     if (false !== onsubmit.apply(form, [settings, self])) {
                         /* Custom inputs call before submit hook. */
                         /* If it returns false abort submitting. */
                         if (false !== submit.apply(form, [settings, self])) {
-                            
+
                             //strd. value
                             var id = self.id;
                             var value = input.val();
-                            
+
                             //value from plugin if available
                             var data = get_data.apply(form, [settings, self]);
                             if(data)
@@ -551,6 +570,7 @@
         loadtype   : 'GET',
         loadtext   : 'Loading...',
         placeholder: 'Click to edit',
+        containerName : 'div.edit-container',
         loaddata   : {},
         submitdata : {},
         ajaxoptions: {}
