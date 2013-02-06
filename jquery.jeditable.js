@@ -48,6 +48,8 @@
   * @param String  options[select]    true or false, when true text is highlighted ??
   * @param String  options[placeholder] Placeholder text or html to insert when element is empty. **
   * @param String  options[onblur]    'cancel', 'submit', 'ignore' or function ??
+  * @param String  options[size]      the size of the text field
+  * @param String  options[maxlength] the maximum number of character in the text field
   *
   * @param Function options[onsubmit] function(settings, original) { ... } called before submit
   * @param Function options[onreset]  function(settings, original) { ... } called before reset
@@ -489,6 +491,14 @@
                     /* https://bugzilla.mozilla.org/show_bug.cgi?id=236791 */
                     //input[0].setAttribute('autocomplete','off');
                     input.attr('autocomplete','off');
+                    if (settings.size) {
+                        input.attr('size', settings.size);
+                    }
+
+                    if (settings.maxlength) {
+                        input.attr('maxlength', settings.maxlength);
+                    }
+
                     $(this).append(input);
                     return(input);
                 }
