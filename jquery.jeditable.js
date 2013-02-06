@@ -94,6 +94,7 @@
         var reset    = $.editable.types[settings.type].reset
                     || $.editable.types['defaults'].reset;
         var callback = settings.callback || function() { };
+		var intercept = settings.intercept || function(s) { return s; };
         var onedit   = settings.onedit   || function() { };
         var onsubmit = settings.onsubmit || function() { };
         var onreset  = settings.onreset  || function() { };
@@ -377,6 +378,7 @@
                                   dataType: 'html',
                                   url     : settings.target,
                                   success : function(result, status) {
+                                      result = intercept.apply(self,[result]);
                                       if (ajaxoptions.dataType == 'html') {
                                         $(self).html(result);
                                       }
